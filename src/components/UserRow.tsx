@@ -5,6 +5,7 @@ import User from "../Interfaces/User";
 
 interface UserRowProps extends User {
   onToggleStatus: (stateTo: string, id: string) => void;
+  onDeleteUser: (id: string) => void;
 }
 
 const UserRow: React.FC<UserRowProps> = ({
@@ -14,6 +15,7 @@ const UserRow: React.FC<UserRowProps> = ({
   email,
   isActive,
   onToggleStatus,
+  onDeleteUser,
   id,
 }) => {
   return (
@@ -42,7 +44,11 @@ const UserRow: React.FC<UserRowProps> = ({
           icon={<CheckIcon />}
           onClick={() => onToggleStatus("activate", id)}
         />
-        <IconButton aria-label="Delete" icon={<DeleteIcon />} />
+        <IconButton
+          aria-label="Delete"
+          icon={<DeleteIcon />}
+          onClick={() => onDeleteUser(id)}
+        />
       </Flex>
     </Flex>
   );

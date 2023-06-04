@@ -5,11 +5,13 @@ import User from "../Interfaces/User";
 interface UserListProps {
   userList: User[];
   onToggleStatus: (stateTo: string, id: string) => void;
+  onDeleteUser: (id: string) => void;
 }
 
 export const UserList: React.FC<UserListProps> = ({
   userList,
   onToggleStatus,
+  onDeleteUser,
 }) => {
   return (
     <Stack>
@@ -24,6 +26,7 @@ export const UserList: React.FC<UserListProps> = ({
             email={item.email}
             isActive={item.isActive}
             onToggleStatus={onToggleStatus}
+            onDeleteUser={onDeleteUser}
           ></UserRow>
         );
       })}

@@ -7,6 +7,7 @@ import AddUserModal from "./components/AddUserModal";
 import FormData from "./Interfaces/FormData";
 import Header from "./components/Header";
 import User from "./Interfaces/User";
+import getUserWithId from "./utils/getUserWithId";
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -18,19 +19,19 @@ const App = () => {
 
   const addUser = () => {
     let newStateList = [...userList];
-    let formData = watch();
-    let userData = {
-      id: crypto.randomUUID(),
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      imageUrl: formData.imageUrl,
-      email: formData.email,
-      isActive: formData.isActive,
-    };
+    let userData = getUserWithId(watch());
     newStateList.push(userData);
     setUserList(newStateList);
+
+    //cleanup
     reset();
     onClose();
+  };
+
+  const onDeleteUser = (id: string) => {
+    console.log(id);
+    let newListState = userList.filter((user: User) => user.id !== id);
+    setUserList(newListState);
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
@@ -54,7 +55,11 @@ const App = () => {
     <Box h={windowSize.current[1]}>
       <AbsoluteCenter w={"600px"}>
         <Header onOpen={onOpen} userCount={userList.length} />
-        <UserList userList={userList} onToggleStatus={onToggleStatus} />
+        <UserList
+          userList={userList}
+          onToggleStatus={onToggleStatus}
+          onDeleteUser={onDeleteUser}
+        />
         <AddUserModal
           isOpen={isOpen}
           onClose={onClose}
