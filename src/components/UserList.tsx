@@ -1,8 +1,16 @@
 import UserRow from "./UserRow";
 import { Stack } from "@chakra-ui/react";
-import UserListProps from "../Interfaces/UserListProps";
+import User from "../Interfaces/User";
 
-export const UserList: React.FC<UserListProps> = ({ userList }) => {
+interface UserListProps {
+  userList: User[];
+  onToggleStatus: (stateTo: string, id: string) => void;
+}
+
+export const UserList: React.FC<UserListProps> = ({
+  userList,
+  onToggleStatus,
+}) => {
   return (
     <Stack>
       {userList.map((item) => {
@@ -14,7 +22,8 @@ export const UserList: React.FC<UserListProps> = ({ userList }) => {
             lastName={item.lastName}
             imageUrl={item.imageUrl}
             email={item.email}
-            active={item.active}
+            isActive={item.isActive}
+            onToggleStatus={onToggleStatus}
           ></UserRow>
         );
       })}

@@ -13,62 +13,66 @@ import {
   ModalFooter,
   Checkbox,
 } from "@chakra-ui/react";
-import AddUserModalProps from "../Interfaces/AddUserModalProps";
+import {
+  UseFormHandleSubmit,
+  UseFormRegister,
+  SubmitHandler,
+} from "react-hook-form";
+import FormData from "../Interfaces/FormData";
+
+interface AddUserModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  handleSubmit: UseFormHandleSubmit<FormData, undefined>;
+  register: UseFormRegister<FormData>;
+  onSubmit: SubmitHandler<FormData>;
+}
 
 const AddUserModal: React.FC<AddUserModalProps> = ({
   isOpen,
   onClose,
-  onClickAdd,
-  handleOnChangeName,
-  handleOnChangeLastName,
-  handleOnChangeEmail,
-  handleOnChangeUrl,
-  handleOnChangeIsActive,
-  isChecked,
+  handleSubmit,
+  register,
+  onSubmit,
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Add User</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl>
-            <FormLabel>First Name</FormLabel>
-            <Input onChange={handleOnChangeName} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Last Name</FormLabel>
-            <Input onChange={handleOnChangeLastName} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Email</FormLabel>
-            <Input onChange={handleOnChangeEmail} />
-          </FormControl>
-          <FormControl>
-            <FormLabel>Image URL</FormLabel>
-            <Input onChange={handleOnChangeUrl} />
-          </FormControl>
-          <FormControl>
-            <Checkbox
-              defaultChecked={isChecked}
-              onChange={handleOnChangeIsActive}
-            >
-              Is Active{" "}
-            </Checkbox>
-          </FormControl>
-        </ModalBody>
-
-        <ModalFooter>
-          {" "}
-          <Button colorScheme="blue" mr={3} onClick={onClickAdd}>
-            Add User
-          </Button>
-          <Button onClick={onClose} variant="ghost">
-            Close
-          </Button>
-        </ModalFooter>
-      </ModalContent>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add User</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <FormControl>
+              <FormLabel>First Name</FormLabel>
+              <Input {...register("firstName")} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Last Name</FormLabel>
+              <Input {...register("lastName")} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Email</FormLabel>
+              <Input {...register("email")} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Image URL</FormLabel>
+              <Input {...register("imageUrl")} />
+            </FormControl>
+            <FormControl>
+              <Checkbox {...register("isActive")}>Is Active</Checkbox>
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="blue" type="submit" mr={3}>
+              Add User
+            </Button>
+            <Button onClick={onClose} variant="ghost">
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </form>
     </Modal>
   );
 };

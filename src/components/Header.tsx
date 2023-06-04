@@ -1,6 +1,10 @@
 import { Button, Flex, Heading } from "@chakra-ui/react";
 import React from "react";
-import HeaderProps from "../Interfaces/HeaderProps";
+
+interface HeaderProps {
+  userCount: number;
+  onOpen: () => void;
+}
 
 const Header: React.FC<HeaderProps> = ({ userCount, onOpen }) => {
   return (

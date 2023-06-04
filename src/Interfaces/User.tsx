@@ -1,9 +1,5 @@
-interface User {
+import FormData from "./FormData";
+interface User extends FormData {
   id: string;
-  firstName: string;
-  lastName: string;
-  imageUrl: string;
-  email: string;
-  active: boolean;
 }
 export default User;

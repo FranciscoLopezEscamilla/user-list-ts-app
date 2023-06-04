@@ -1,101 +1,66 @@
-import { useRef, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { AbsoluteCenter, Box } from "@chakra-ui/react";
-import Header from "./components/Header";
+import { useRef, useState } from "react";
+import { useDisclosure } from "@chakra-ui/react";
 import { UserList } from "./components/UserList";
 import AddUserModal from "./components/AddUserModal";
-import { useDisclosure } from "@chakra-ui/react";
+import FormData from "./Interfaces/FormData";
+import Header from "./components/Header";
+import User from "./Interfaces/User";
 
 const App = () => {
-  const windowSize = useRef([window.innerWidth, window.innerHeight]);
-  const [userList, setUserList] = useState([
-    {
-      id: "1",
-      firstName: "Dan",
-      lastName: "Abrahmov",
-      imageUrl: "https://bit.ly/dan-abramov",
-      email: "dan@gmail.com",
-      active: true,
-    },
-  ]);
-
-  const [formName, setFormName] = useState("");
-  const [formLastName, setFormLastName] = useState("");
-  const [formEmail, setFormEmail] = useState("");
-  const [formImageUrl, setFormImageUrl] = useState("");
-  const [formIsActive, setFormIsActive] = useState(false);
-
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleOnChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormName(event.target.value);
-  };
-
-  const handleOnChangeLastName = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setFormLastName(event.target.value);
-  };
-
-  const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormEmail(event.target.value);
-  };
-
-  const handleOnChangeUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormImageUrl(event.target.value);
-  };
-
-  const handleOnChangeIsActive = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    console.log(event.target.checked);
-    setFormIsActive(event.target.checked);
-  };
+  const { register, handleSubmit, watch, reset } = useForm<FormData>({
+    mode: "onChange",
+  });
+  const windowSize = useRef([window.innerWidth, window.innerHeight]);
+  const [userList, setUserList] = useState<User[]>([]);
 
   const addUser = () => {
     let newStateList = [...userList];
-    newStateList.push(getGeneratedUser());
+    let formData = watch();
+    let userData = {
+      id: crypto.randomUUID(),
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      imageUrl: formData.imageUrl,
+      email: formData.email,
+      isActive: formData.isActive,
+    };
+    newStateList.push(userData);
     setUserList(newStateList);
-    resetFormToDefault();
+    reset();
     onClose();
   };
 
-  const getGeneratedUser = () => {
-    return {
-      id: crypto.randomUUID(),
-      firstName: formName,
-      lastName: formLastName,
-      imageUrl: "https://bit.ly/dan-abramov",
-      email: formEmail,
-      active: formIsActive,
-    };
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    addUser();
+    console.log(data);
   };
 
-  const resetFormToDefault = () => {
-    setFormIsActive(false);
-    setFormName("");
-    setFormLastName("");
-    setFormEmail("");
+  const onToggleStatus = (stateTo: string, id: string) => {
+    let newListState = [...userList];
+    let index = newListState.findIndex((item) => item.id === id);
+    if (!Boolean(index >= 0)) return;
+    if (stateTo === "deactivate") {
+      newListState[index].isActive = false;
+    } else {
+      newListState[index].isActive = true;
+    }
+    setUserList(newListState);
   };
 
   return (
     <Box h={windowSize.current[1]}>
       <AbsoluteCenter w={"600px"}>
-        <Header
-          onOpen={onOpen}
-          addUserFn={addUser}
-          userCount={userList.length}
-        />
-        <UserList userList={userList} />
+        <Header onOpen={onOpen} userCount={userList.length} />
+        <UserList userList={userList} onToggleStatus={onToggleStatus} />
         <AddUserModal
-          handleOnChangeLastName={handleOnChangeLastName}
-          handleOnChangeName={handleOnChangeName}
           isOpen={isOpen}
           onClose={onClose}
-          onClickAdd={addUser}
-          handleOnChangeEmail={handleOnChangeEmail}
-          handleOnChangeUrl={handleOnChangeUrl}
-          handleOnChangeIsActive={handleOnChangeIsActive}
-          isChecked={formIsActive}
+          handleSubmit={handleSubmit}
+          register={register}
+          onSubmit={onSubmit}
         />
       </AbsoluteCenter>
     </Box>
