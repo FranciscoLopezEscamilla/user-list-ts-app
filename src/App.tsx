@@ -8,6 +8,7 @@ import FormData from "./Interfaces/FormData";
 import Header from "./components/Header";
 import User from "./Interfaces/User";
 import getUserWithId from "./utils/getUserWithId";
+import FormDataCopy from "./Interfaces/FormDataCopy";
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,7 +35,7 @@ const App = () => {
     setUserList(newListState);
   };
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<Partial<FormDataCopy>> = (data) => {
     addUser();
     console.log(data);
   };
@@ -43,7 +44,7 @@ const App = () => {
     let newListState = [...userList];
     let index = newListState.findIndex((item) => item.id === id);
     if (!Boolean(index >= 0)) return;
-    if (stateTo === "deactivate") {
+    if (stateTo === "disable") {
       newListState[index].isActive = false;
     } else {
       newListState[index].isActive = true;

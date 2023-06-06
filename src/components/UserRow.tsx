@@ -37,7 +37,7 @@ const UserRow: React.FC<UserRowProps> = ({
         <IconButton
           aria-label="Busy"
           icon={<CloseIcon />}
-          onClick={() => onToggleStatus("deactivate", id)}
+          onClick={() => onToggleStatus("disable", id)}
         />
         <IconButton
           aria-label="Available"
